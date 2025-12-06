@@ -9,13 +9,13 @@ start_time = time.time()
 
 @app.route("/")
 def index():
-    return "Hello DevOps! Ez egy egyszerű Flask alapú webalkalmazás."
+    return "Hello World"
 
 
 @app.route("/info")
 def info():
     data = {
-        "app": "Hello DevOps Flask",
+        "app": "Hello DevOps World",
         "author": "MrGyu",
         "version": "1.0.0"
     }
