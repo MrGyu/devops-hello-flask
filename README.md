@@ -1,161 +1,144 @@
-DevOps – Hello World webalkalmazás Flask (Python) használatával
+# DevOps – Hello World webalkalmazás Flask (Python) használatával
 
 Ez a projekt egy egyszerű „Hello DevOps” Flask webalkalmazást futtat, amelyen keresztül bemutatom az alapvető DevOps lépéseket:
 
-program forráskód
+- program forráskód  
+- verziókezelés (trunk-alapú fejlesztés)  
+- buildelés  
+- konténerizálás (Dockerrel)  
+- CI pipeline + Docker Hub registry-be feltöltés  
 
-verziókezelés (trunk-alapú fejlesztés)
+---
 
-buildelés
-
-konténerizálás (Dockerrel)
-
-CI pipeline + Docker Hub registry-be feltöltés
-
-1. Alkalmazás
+## 1. Alkalmazás
 
 Az alkalmazás egy minimális Flask webszolgáltatás, amely HTTP-n keresztül érhető el, és egyszerű szövegeket jelenít meg.
 
-Elérhetősége futtatás esetén:
-http://localhost:8080
+- **Elérhetősége futtatás esetén:**  
+  http://localhost:8080
 
-Nyilvános DockerHub repo:
+- **Nyilvános DockerHub repo:**  
+  https://hub.docker.com/r/mrgyu/devops-hello-flask
 
-https://hub.docker.com/r/mrgyu/devops-hello-flask
+- **Forráskód az alkalmazáshoz:**  
+  `app.py`
 
-Forráskód az alkalmazáshoz:
+---
 
-app.py
+## 2. Buildelés és futtatás lokálisan
 
-2. Buildelés és futtatás lokálisan
-2.1 Virtuális környezet létrehozása
+### 2.1 Virtuális környezet létrehozása
 
-Windows:
-
+**Windows:**
+```bash
 python -m venv venv
 venv\Scripts\activate
-
-
 Linux / macOS:
 
+bash
+Kód másolása
 python -m venv venv
 source venv/bin/activate
-
 2.2 Dependenciák telepítése
+bash
+Kód másolása
 pip install -r requirements.txt
-
 2.3 Alkalmazás futtatása
+bash
+Kód másolása
 python app.py
-
 3. Docker használata
-
-A projekt tartalmaz egy működő Dockerfile-t, amely lehetővé teszi az alkalmazás konténerizálását.
+A projekt tartalmaz egy Dockerfile-t, amellyel az alkalmazás konténerbe csomagolható.
 
 3.1 Docker image buildelése
+bash
+Kód másolása
 docker build -t devops-hello-flask:v1 .
-
-3.2 Docker konténer futtatása (8080-as port)
+3.2 Konténer futtatása (8080-as port)
+bash
+Kód másolása
 docker run -p 8080:8080 devops-hello-flask:v1
-
 4. Git – Trunk-alapú fejlesztés
-
 A projekt GitHub repója:
 https://github.com/MrGyu/devops-hello-flask
 
-A fejlesztés trunk-based modell szerint történt:
+A fejlesztés trunk-alapú modell szerint történt:
 
-main → stabil, élesre szánt ág
+main = stabil ág
 
-fejlesztések → rövid életű feature brancheken
+módosítások rövid életű feature branch-ekben
 
-a kész munkák merge-elve kerülnek vissza a main-re
+merge vissza a trunkba
 
-Példafolyamat:
-# módosítások az app.py-ben
+Példa folyamat:
+
+bash
+Kód másolása
 git checkout -b feature/update-message
 git add app.py
 git commit -m "Üzenet frissítése"
 git checkout main
 git merge feature/update-message
 git push
-
-5. CI – GitHub Actions és Docker Hub integráció
-
-A projekt automatikus CI folyamatot használ:
+5. CI – GitHub Actions + Docker Hub integráció
+A projekt tartalmaz egy automatizált CI pipelinet:
 .github/workflows/ci.yml
 
 A pipeline automatikusan lefut:
 
-minden push esetén a main ágra
+minden push esetén a main branch-re
 
-minden pull request esetén a main ágra
+minden pull request esetén
 
-A pipeline fő lépései:
-
-Repository checkout
+A pipeline lépései:
+Repo checkout
 
 Python környezet beállítása
 
 Dependenciák telepítése
 
-Docker Hub bejelentkezés (GitHub Secrets használatával)
+Docker Hub login (GitHub Secrets alapján)
 
 Docker image build
 
-Docker image push Docker Hubra
+Docker image push Docker Hub-ra
 
 Publikus Docker image:
-mrgyu/devops-hello-flask:latest
 
-Image letöltése és futtatása:
+bash
+Kód másolása
+mrgyu/devops-hello-flask:latest
+Lehúzás és futtatás:
+
+bash
+Kód másolása
 docker pull mrgyu/devops-hello-flask:latest
 docker run -p 8080:8080 mrgyu/devops-hello-flask:latest
-
 6. Projekt struktúrája
+markdown
+Kód másolása
 devops-hello-flask/
 ├── app.py
 ├── requirements.txt
 ├── Dockerfile
 ├── README.md
-├── .gitignore
 └── .github/
     └── workflows/
         └── ci.yml
+7. Megjegyzések
+A Flask fejlesztői szerver nem produkciós célra készült.
 
-7. Egyéb megjegyzések
+Konténerben futtatva a szerver automatikusan indul.
 
-A Flask fejlesztői szerver nem produkciós környezetre készült.
+A CI pipeline minden push esetén új Docker image-et készít.
 
-Konténerben futtatva az alkalmazás automatikusan elindul.
+A Docker Hub-on tárolt image bármikor reprodukálható.
 
-A CI pipeline minden push után új Docker image-et generál.
+A .gitignore kizárja a felesleges fájlokat.
 
-A Docker Hub-on tárolt image teljes mértékben reprodukálható.
+8. Alkalmazás végpontok
+/ – alap "Hello DevOps" üzenet
 
-A trunk-based fejlesztési módszer átlátható és könnyen követhető.
+/info – metaadatok
 
-A .gitignore segít kizárni a nem kívánt vagy generált fájlokat.
-
-Az alkalmazás végpontjai:
-
-/ – alap „Hello DevOps” üzenet
-
-/info – információk az alkalmazásról
-
-/egeszseg – egyszerű működés-visszajelzés (health check)
-
-8. Fejlesztői konténer (VSCode Dev Container - opcionális)
-
-A projekt tartalmazhat VSCode DevContainer konfigurációt, amely lehetővé teszi, hogy a teljes fejlesztői környezet konténerben fusson.
-
-Használata:
-
-Nyisd meg a projektet VSCode-ban.
-
-Telepítsd a "Dev Containers" bővítményt.
-
-Az alul megjelenő értesítésnél válaszd: Reopen in Container
-
-A konténerben nyiss egy terminált és futtasd:
-
-python app.py
+/health – egyszerű státuszjelzés
