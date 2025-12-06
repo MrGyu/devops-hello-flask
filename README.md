@@ -33,112 +33,129 @@ Az alkalmazás egy minimális Flask webszolgáltatás, amely HTTP-n keresztül �
 ```bash
 python -m venv venv
 venv\Scripts\activate
-Linux / macOS:
+```
 
-bash
-Kód másolása
+**Linux / macOS:**
+```bash
 python -m venv venv
 source venv/bin/activate
-2.2 Dependenciák telepítése
-bash
-Kód másolása
+```
+
+---
+
+### 2.2 Dependenciák telepítése
+```bash
 pip install -r requirements.txt
-2.3 Alkalmazás futtatása
-bash
-Kód másolása
+```
+
+---
+
+### 2.3 Alkalmazás futtatása
+```bash
 python app.py
-3. Docker használata
+```
+
+---
+
+## 3. Docker használata
+
 A projekt tartalmaz egy Dockerfile-t, amellyel az alkalmazás konténerbe csomagolható.
 
-3.1 Docker image buildelése
-bash
-Kód másolása
+### 3.1 Docker image buildelése
+```bash
 docker build -t devops-hello-flask:v1 .
-3.2 Konténer futtatása (8080-as port)
-bash
-Kód másolása
+```
+
+### 3.2 Konténer futtatása (8080-as port)
+```bash
 docker run -p 8080:8080 devops-hello-flask:v1
-4. Git – Trunk-alapú fejlesztés
-A projekt GitHub repója:
+```
+
+---
+
+## 4. Git – Trunk-alapú fejlesztés
+
+A projekt GitHub repója:  
 https://github.com/MrGyu/devops-hello-flask
 
 A fejlesztés trunk-alapú modell szerint történt:
 
-main = stabil ág
+- **main = stabil ág**
+- a módosítások **rövid életű feature branchekben** készültek
+- majd merge vissza a main-re
 
-módosítások rövid életű feature branch-ekben
-
-merge vissza a trunkba
-
-Példa folyamat:
-
-bash
-Kód másolása
+Példa fejlesztési folyamat:
+```bash
 git checkout -b feature/update-message
 git add app.py
 git commit -m "Üzenet frissítése"
 git checkout main
 git merge feature/update-message
 git push
-5. CI – GitHub Actions + Docker Hub integráció
-A projekt tartalmaz egy automatizált CI pipelinet:
-.github/workflows/ci.yml
+```
 
-A pipeline automatikusan lefut:
+---
 
-minden push esetén a main branch-re
+## 5. CI – GitHub Actions + Docker Hub integráció
 
-minden pull request esetén
+A projekt tartalmaz egy automatikus CI pipeline-t:  
+`.github/workflows/ci.yml`
 
-A pipeline lépései:
-Repo checkout
+A pipeline automatikusan fut:
 
-Python környezet beállítása
+- minden push esetén a **main** branchen
+- minden pull request esetén
 
-Dependenciák telepítése
+### A pipeline lépései:
 
-Docker Hub login (GitHub Secrets alapján)
+1. Repository checkout  
+2. Python környezet beállítása  
+3. Dependenciák telepítése  
+4. Docker Hub login (GitHub Secrets segítségével)  
+5. Docker image build, majd push a Docker Hubra  
 
-Docker image build
+### Publikus Docker Hub image:
 
-Docker image push Docker Hub-ra
+**mrg yu/devops-hello-flask:latest**
 
-Publikus Docker image:
+Letöltés és futtatás:
 
-bash
-Kód másolása
-mrgyu/devops-hello-flask:latest
-Lehúzás és futtatás:
-
-bash
-Kód másolása
+```bash
 docker pull mrgyu/devops-hello-flask:latest
 docker run -p 8080:8080 mrgyu/devops-hello-flask:latest
-6. Projekt struktúrája
-markdown
-Kód másolása
+```
+
+---
+
+## 6. Projekt struktúrája
+
+```
 devops-hello-flask/
 ├── app.py
 ├── requirements.txt
 ├── Dockerfile
 ├── README.md
+├── .gitignore
 └── .github/
     └── workflows/
         └── ci.yml
-7. Megjegyzések
-A Flask fejlesztői szerver nem produkciós célra készült.
+```
 
-Konténerben futtatva a szerver automatikusan indul.
+---
 
-A CI pipeline minden push esetén új Docker image-et készít.
+## 7. Megjegyzések
 
-A Docker Hub-on tárolt image bármikor reprodukálható.
+- A Flask fejlesztői szerver **nem produkciós használatra készült**.  
+- Konténerben futtatva a szerver automatikusan indul.  
+- A CI pipeline minden módosítás után új Docker image-et generál.  
+- A Docker Hub-on tárolt image **teljes mértékben reprodukálható**.  
+- A trunk-based fejlesztés egyszerű és jól követhető.  
+- A `.gitignore` biztosítja, hogy felesleges fájlok ne kerüljenek a repository-ba.
 
-A .gitignore kizárja a felesleges fájlokat.
+---
 
-8. Alkalmazás végpontok
-/ – alap "Hello DevOps" üzenet
+## 8. Alkalmazás végpontok
 
-/info – metaadatok
-
-/health – egyszerű státuszjelzés
+- `/` – alap „Hello World” válasz  
+- `/info` – egyszerű információ az alkalmazásról  
+- `/egeszseg` – healthcheck végpont
