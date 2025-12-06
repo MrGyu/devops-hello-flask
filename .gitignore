@@ -1,0 +1,42 @@
+# Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+env/
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+*.tmp
+
+# Build artefacts
+build/
+dist/
+*.egg-info/
+
+# Docker
+*.tar
+**/.dockerignore
+
+# Flask specific
+instance/
+*.db
+
+# GitHub Tokens
+*.pem
+
+# Backups
+*.bak
